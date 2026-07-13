@@ -52,6 +52,17 @@ pipeline {
                 }
             }
         }
+
+        stage('5. Deploy / Run Containers') {
+            steps {
+                echo 'Running containers using Docker Compose...'
+                
+                sh "docker compose down"
+                sh "docker compose up -d"
+                
+                echo '✅ Application is now live and running!'
+            }
+        }
     }
 
     post {
