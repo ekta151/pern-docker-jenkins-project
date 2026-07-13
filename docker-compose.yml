@@ -17,7 +17,7 @@ services:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - 9000:9000
+      - 8080:8080
     networks:
       - pernstore
     depends_on:
