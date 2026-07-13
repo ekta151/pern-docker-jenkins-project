@@ -60,7 +60,7 @@ pipeline {
                 sh "docker compose down"
                 sh "docker compose up -d"
                 
-                echo '✅ Application is now live and running!'
+                echo ' Application is now live and running!'
             }
         }
     }
@@ -71,10 +71,10 @@ pipeline {
             sh "docker logout"
         }
         success {
-            echo 'SUCCESS: Pipeline finished perfectly! Check your Docker Hub account.'
+            echo 'SUCCESS: Pipeline built, pushed, and deployed perfectly!'
         }
         failure {
-            echo 'FAILURE: Check the Jenkins Console Output.'
+            echo 'FAILURE: Check Jenkins Console Output.'
         }
     }
 }
