@@ -13,12 +13,11 @@ services:
       - POSTGRES_DB=pernstore
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=adminuser
-      - PGSSLMODE=disable
     volumes:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - 9000:9000  
+      - 9000:9000
     networks:
       - pernstore
     depends_on:
@@ -27,10 +26,10 @@ services:
   client:
     image: pern-store-client
     container_name: pern-store-client
-    restart: unless-stopped
     build:
       context: ./client
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - 3001:3000
     volumes:
