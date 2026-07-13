@@ -67,7 +67,7 @@ pipeline {
 
     post {
         always {
-            echo '🧹 Cleaning up local session tokens...'
+            echo 'Cleaning up local session tokens...'
             sh "docker logout"
         }
         success {
