@@ -4,6 +4,9 @@ pipeline {
     environment {
         DOCKER_HUB_USER = 'ekta151'
         DOCKER_CRED_ID  = 'docker-hub-credentials'
+        
+        // 🔥 YEH LINE SABSE IMPORTANT HAI: Isse Jenkins ko MacBook ke saare standard binary paths mil jayenge
+        PATH            = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:${env.PATH}"
     }
 
     stages {
@@ -18,7 +21,8 @@ pipeline {
             steps {
                 echo '🏗️ Step 2: Building PERN Store Client (Frontend) Docker Image...'
                 dir('client') {
-                    sh "/usr/local/bin/docker build -t ${env.DOCKER_HUB_USER}/pern-frontend:latest ."
+                    // Ab direct 'docker' command chalegi bina full path ke
+                    sh "docker build -t ${env.DOCKER_HUB_USER}/pern-frontend:latest ."
                 }
             }
         }
@@ -27,7 +31,7 @@ pipeline {
             steps {
                 echo '🏗️ Step 3: Building PERN Store Server (Backend) Docker Image...'
                 dir('server') {
-                    sh "/usr/local/bin/docker build -t ${env.DOCKER_HUB_USER}/pern-backend:latest ."
+                    sh "docker build -t ${env.DOCKER_HUB_USER}/pern-backend:latest ."
                 }
             }
         }
@@ -40,13 +44,13 @@ pipeline {
                     usernameVariable: 'DOCKER_USER', 
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    sh "echo \$DOCKER_PASS | /usr/local/bin/docker login -u \$DOCKER_USER --password-stdin"
+                    sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
                     
                     echo 'Pushing Frontend Image...'
-                    sh "/usr/local/bin/docker push ${env.DOCKER_HUB_USER}/pern-frontend:latest"
+                    sh "docker push ${env.DOCKER_HUB_USER}/pern-frontend:latest"
                     
                     echo 'Pushing Backend Image...'
-                    sh "/usr/local/bin/docker push ${env.DOCKER_HUB_USER}/pern-backend:latest"
+                    sh "docker push ${env.DOCKER_HUB_USER}/pern-backend:latest"
                 }
             }
         }
@@ -55,8 +59,7 @@ pipeline {
     post {
         always {
             echo '🧹 Cleaning up local session tokens...'
-            // Full path for docker logout
-            sh "/usr/local/bin/docker logout"
+            sh "docker logout"
         }
         success {
             echo '🎉 SUCCESS: Pipeline finished perfectly! Check your Docker Hub account.'
