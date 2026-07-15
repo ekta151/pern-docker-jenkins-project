@@ -60,6 +60,8 @@ pipeline {
                     file(credentialsId: 'server-env-file', variable: 'SERVER_ENV'),
                     file(credentialsId: 'client-env-file', variable: 'CLIENT_ENV')
                 ]) {
+
+                    sh 'rm -rf server/.env client/.env'
                     sh 'cp $SERVER_ENV server/.env'
                     sh 'cp $CLIENT_ENV client/.env'
                  }
