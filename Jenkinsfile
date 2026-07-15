@@ -53,6 +53,19 @@ pipeline {
             }
         }
 
+
+        stage('Setup Environment Files') {
+            steps {
+                withCredentials([
+                    file(credentialsId: 'server-env-file', variable: 'SERVER_ENV'),
+                    file(credentialsId: 'client-env-file', variable: 'CLIENT_ENV')
+                ]) {
+                    sh 'cp $SERVER_ENV server/.env'
+                    sh 'cp $CLIENT_ENV client/.env'
+                 }
+             }
+        }
+
         stage('5. Deploy / Run Containers') {
             steps {
                 echo 'Running containers using Docker Compose...'
