@@ -16,6 +16,18 @@ pipeline {
             }
         }
 
+        stage('SonarQube Code Analysis') {
+            steps {
+                echo 'Running SonarQube Scanner for PERN Store...'
+                script {
+                    def scannerHome = tool 'sonar-scanner'
+                    withSonarQubeEnv('SonarQube-Server') {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
+                }
+            }
+        }
+
         stage('Build Frontend Image') {
             steps {
                 echo 'Step 2: Building PERN Store Client (Frontend) Docker Image...'
