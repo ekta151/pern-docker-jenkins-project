@@ -117,18 +117,21 @@ pipeline {
         }
         failure {
             echo 'FAILURE: Sending alert email to developer...'
-            emailext (
-                subject: "ALERT: Jenkins Pipeline Failed! - ${currentBuild.fullDisplayName}",
-                body: """pipleline had been crashed. Please check the logs and fix the issues.
-                         
-                         Your pipleline had been crashed.The biggest reason for this is that your code quality is not up to the mark. Please check the SonarQube dashboard for more details.
-                         
-                         Build URL: ${env.BUILD_URL}
-                         SonarQube Dashboard: http://localhost:9000
-                         
-                         please check the logs and fix the issues.""",
-                to: 'ektagupta2004v@gmail.com' 
-            )
+            mail to: 'ektagupta2004v@gmail.com',
+                subject: "ALERT: Jenkins Pipeline Failed! - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """ALERT: Jenkins Pipeline Failed!
+
+                    Your pipeline has crashed. The biggest reason for this is that your code quality is not up to the mark. Please check the SonarQube dashboard for more details.
+
+                    --------------------------------------------------
+                    Build Details:
+                    - Pipeline Name : ${env.JOB_NAME}
+                    - Build Number  : #${env.BUILD_NUMBER}
+                    - Build URL     : ${env.BUILD_URL}
+                    - SonarQube     : http://localhost:9000
+                    --------------------------------------------------
+
+                    Please check the logs and fix the issues."""
         }
     }
 }
