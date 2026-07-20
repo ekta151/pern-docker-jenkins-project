@@ -35,7 +35,7 @@ pipeline {
                     // Agar High bugs honge aur Quality Gate fail hoga, toh pipeline yahi ruk jayegi
                     timeout(time: 5, unit: 'MINUTES') {
                         def qg = waitForQualityGate()
-                        if (qg.status == 'OK') {
+                        if (qg.status != 'OK') {
                             error "Pipeline aborted due to Quality Gate failure: ${qg.status}"
                         }
                     }
