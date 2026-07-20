@@ -28,6 +28,21 @@ pipeline {
             }
         }
 
+        stage('SonarQube Quality Gate') {
+            steps {
+                echo 'Checking SonarQube Quality Gate...'
+                script {
+                    // Agar High bugs honge aur Quality Gate fail hoga, toh pipeline yahi ruk jayegi
+                    timeout(time: 5, unit: 'MINUTES') {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to Quality Gate failure: ${qg.status}"
+                        }
+                    }
+                }
+            }
+        }
+
         stage('Build Frontend Image') {
             steps {
                 echo 'Step 2: Building PERN Store Client (Frontend) Docker Image...'
@@ -101,7 +116,19 @@ pipeline {
             echo 'SUCCESS: Pipeline built, pushed, and deployed perfectly!'
         }
         failure {
-            echo 'FAILURE: Check Jenkins Console Output.'
+            echo 'FAILURE: Sending alert email to developer...'
+            emailext (
+                subject: "ALERT: Jenkins Pipeline Failed! - ${currentBuild.fullDisplayName}",
+                body: """pipleline had been crashed. Please check the logs and fix the issues.
+                         
+                         Your pipleline had been crashed.The biggest reason for this is that your code quality is not up to the mark. Please check the SonarQube dashboard for more details.
+                         
+                         Build URL: ${env.BUILD_URL}
+                         SonarQube Dashboard: http://localhost:9000
+                         
+                         please check the logs and fix the issues.""",
+                to: 'ektagupta2004v@gmail.com' 
+            )
         }
     }
 }
