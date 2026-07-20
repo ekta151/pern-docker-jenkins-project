@@ -32,7 +32,6 @@ pipeline {
             steps {
                 echo 'Checking SonarQube Quality Gate...'
                 script {
-                    // Agar High bugs honge aur Quality Gate fail hoga, toh pipeline yahi ruk jayegi
                     timeout(time: 5, unit: 'MINUTES') {
                         def qg = waitForQualityGate()
                         if (qg.status != 'OK') {
@@ -58,6 +57,14 @@ pipeline {
                 dir('server') {
                     sh "docker build -t ${env.DOCKER_HUB_USER}/pern-backend:latest ."
                 }
+            }
+        }
+
+        stage('Trivy Security Scan') {
+            steps {
+                echo 'Scanning Frontend & Backend Docker Images with Trivy...'
+                sh "trivy image --severity HIGH,CRITICAL ${env.DOCKER_HUB_USER}/pern-frontend:latest"
+                sh "trivy image --severity HIGH,CRITICAL ${env.DOCKER_HUB_USER}/pern-backend:latest"
             }
         }
 
